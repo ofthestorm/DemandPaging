@@ -1,5 +1,6 @@
 package sample;
 
+import java.text.DecimalFormat;
 import java.time.Clock;
 import java.util.Random;
 
@@ -21,6 +22,8 @@ public class LRU {
     private static int executedInstructions = 0;
     //the index should be replaced
     private static int index = 0;
+
+    private static int i = 0;
     //the list of memory which contains 4 parts
     //private ArrayList<Integer> memory = new ArrayList<>(4);
     private static int [] memory = new int[4];
@@ -31,6 +34,8 @@ public class LRU {
  //   private static Clock[] time = new Clock [4];
     //the array contains the executing order of instructions
     private static int [] instructions = new int[320];
+
+    DecimalFormat df = new DecimalFormat("#.00");
     //random
 //    static Random random = new Random();
 
@@ -69,12 +74,52 @@ public class LRU {
 //    }
 
     //execute instructions
-    public void executeInstructions() throws InterruptedException {
+//    public void executeInstructions() throws InterruptedException {
+//
+//     //   generateInstructions();
+//        int i = 0;
+//
+//        while (executedInstructions != 320) {
+//            executedInstructions += 1;
+//
+//            currentInstruction = instructions[i++];
+//            int currentPage = getPage(currentInstruction);
+//            if (isExist(currentPage)) { // memory contains current page
+//                time[getIndexOfPage(currentPage)] = 0;
+//            } else {
+//                missPageCount += 1; // record missing page
+//                if (getEmptyPart() == 0) { // memory is already full
+//
+//                    int leastRecentlyUsedIndex = getLeastRecentlyUsedIndex();
+//                    memory[leastRecentlyUsedIndex] = currentPage;
+//                    time[leastRecentlyUsedIndex] = 0;
+//                    for (int j = 0; j < 4; j++) {
+//                        if (j != leastRecentlyUsedIndex)
+//                            time[j] += 1;
+//                    }
+//
+//                } else {
+//                    //add current page
+//                    //memory.add(currentPage);
+//                    int firstEmptyIndex = getFirstEmptyIndex();
+//                    memory[firstEmptyIndex] = currentPage;
+//                    bitmap[firstEmptyIndex] = true;
+//                    time[firstEmptyIndex] = 0;
+//                    for (int j = 0; j < 4; j++) {
+//                        if (j != firstEmptyIndex)
+//                            time[j] += 1;
+//                    }
+//
+//                }
+//            }
+//            displayMemory();
+//            Thread.sleep(1000);
+//        }
+//    }
+    public void executeInstructions()  {
 
-     //   generateInstructions();
-        int i = 0;
+        //   generateInstructions();
 
-        while (executedInstructions != 320) {
             executedInstructions += 1;
 
             currentInstruction = instructions[i++];
@@ -85,31 +130,35 @@ public class LRU {
                 missPageCount += 1; // record missing page
                 if (getEmptyPart() == 0) { // memory is already full
 
-                    int leastRecentlyUsedIndex = getLeastRecentlyUsedIndex();
-                    memory[leastRecentlyUsedIndex] = currentPage;
-                    time[leastRecentlyUsedIndex] = 0;
+                    index = getLeastRecentlyUsedIndex();
+                    memory[index] = currentPage;
+                    time[index] = 0;
                     for (int j = 0; j < 4; j++) {
-                        if (j != leastRecentlyUsedIndex)
+                        if (j != index)
                             time[j] += 1;
                     }
 
                 } else {
                     //add current page
                     //memory.add(currentPage);
-                    int firstEmptyIndex = getFirstEmptyIndex();
-                    memory[firstEmptyIndex] = currentPage;
-                    bitmap[firstEmptyIndex] = true;
-                    time[firstEmptyIndex] = 0;
+                    index = getFirstEmptyIndex();
+                    memory[index] = currentPage;
+                    bitmap[index] = true;
+                    time[index] = 0;
                     for (int j = 0; j < 4; j++) {
-                        if (j != firstEmptyIndex)
+                        if (j != index)
                             time[j] += 1;
                     }
 
                 }
+
+        //    displayMemory();
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
             }
-            displayMemory();
-            Thread.sleep(1000);
-        }
     }
 
     private static boolean isExist(int currentPage) {
@@ -181,8 +230,15 @@ public class LRU {
         return memory;
     }
 
-    public static String getRateOfMissingPage() {
-        return missPageCount + " / " + 320 + " = " + Double.toString((double)missPageCount / (double)320);
+    public int getIndex() {
+//        return index;
+        return getIndexOfPage(getPage(currentInstruction));
+    }
+
+
+    public String getRateOfMissingPage() {
+        double result = (double)missPageCount / (double)320 * 100;
+        return missPageCount + " / " + 320 + " = " + df.format(result) + "%";
     }
 
     private static void displayMemory() {
@@ -202,6 +258,6 @@ public class LRU {
         System.out.println(currentInstruction);
         System.out.println(missPageCount);
         System.out.println(executedInstructions);
-        System.out.println(getRateOfMissingPage());
+//        System.out.println(getRateOfMissingPage());
     }
 }

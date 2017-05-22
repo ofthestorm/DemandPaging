@@ -5,15 +5,17 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Observable;
 
 
 public class Controller {
 
+    UpdateThread updateThread = new UpdateThread(this);
+
+    Thread thread = new Thread(updateThread, "Chef     1");
 
 
     private enum choices {
@@ -34,9 +36,13 @@ public class Controller {
     private LRU lru;
 
     private int [] memory = new int[8];
+//    private static int executedInstructions = 0;
 
-    private Map<String,Text> map = new HashMap<String,Text>();
+    private Map<Integer,Text> map = new HashMap<Integer,Text>();
 
+
+
+    @FXML private Text memory0;
     @FXML private Text memory1;
     @FXML private Text memory2;
     @FXML private Text memory3;
@@ -44,7 +50,7 @@ public class Controller {
     @FXML private Text memory5;
     @FXML private Text memory6;
     @FXML private Text memory7;
-    @FXML private Text memory8;
+
     @FXML private Text FIFOCurrentInstruction;
     @FXML private Text FIFOExecutedInstruction;
     @FXML private Text FIFORateOfMissingPage;
@@ -57,9 +63,8 @@ public class Controller {
 //    private Integer currentChoice = new Integer();
 
     public void initialize() {
-
-        this.setVisible(false);
-
+        init();
+        initMap();
         executionModeChoice.getItems().addAll(
                 "Single step",
                 "Continuous execution"
@@ -77,28 +82,30 @@ public class Controller {
             }
         });
 
+    }
+
+    private void init() {
+
+        this.setVisible(false);
+
         ins.generateInstructions();
         fifo = new FIFO(ins);
         lru = new LRU(ins);
-
-//        for (int i = 0; i < 320; i++) {
-//            System.out.print(ins.getInstructions()[i]+" " );
-//        }
-//        System.out.println("\n");
-//        for (int i = 0; i < 320; i++) {
-//            System.out.print(fifo.getInstructions()[i]+" " );
-//        }
 
     }
 
 
     @FXML
     private void resetButtonOnMouseClicked() {
+        if(choice == choices.continuousExecution) {
+            updateThread.setExit(true);
+        }
+        startButton.setDisable(false);
         startButton.setText("Start");
         button = buttons.start;
         executionModeChoice.setDisable(false);
         this.setVisible(false);
-
+        this.init();
     }
 
     @FXML
@@ -110,19 +117,26 @@ public class Controller {
                 startButton.setText("Next");
 //                System.out.println("s");
                 button = buttons.next;
+                singleStep();
                 this.setMemory();
                 this.setVisible(true);
 
             } else { //next
                 //执行
-
+                if(fifo.getExecutedInstructions() != 320) {
+                    singleStep();
+                } else {
+                    startButton.setDisable(true);
+                }
 //                System.out.println("n");
             }
         } else if (choice == choices.continuousExecution) {
             executionModeChoice.setDisable(true);
-            this.setMemory();
+//            this.setMemory();
             this.setVisible(true);
+//            continuousExecute();
 
+            thread.start();
             //执行
             //sleep(1000)
         } else {
@@ -131,6 +145,7 @@ public class Controller {
     }
 
     private void setVisible(boolean isVisible) {
+        memory0.setVisible(isVisible);
         memory1.setVisible(isVisible);
         memory2.setVisible(isVisible);
         memory3.setVisible(isVisible);
@@ -138,7 +153,6 @@ public class Controller {
         memory5.setVisible(isVisible);
         memory6.setVisible(isVisible);
         memory7.setVisible(isVisible);
-        memory8.setVisible(isVisible);
         FIFOCurrentInstruction.setVisible(isVisible);
         FIFOExecutedInstruction.setVisible(isVisible);
         FIFORateOfMissingPage.setVisible(isVisible);
@@ -150,16 +164,121 @@ public class Controller {
     private void setMemory() {
             System.arraycopy(fifo.getMemory(),0,memory,0,4);
             System.arraycopy(lru.getMemory(),0,memory,4,4);
+//        for (int i = 0; i < 8; i++) {
+//            if(i < 4)
+//                memory[i] = fifo.getMemory()[i];
+//            else
+//                memory[i] = lru.getMemory()[i-4];
+//        }
     }
 
-    private void continuousExecute(){
+    public void continuousExecute(){
         try {
-            fifo.executeInstructions();
-            lru.executeInstructions();
+//            while(fifo.getExecutedInstructions() != 320){
+                fifo.executeInstructions();
+                lru.executeInstructions();
+                this.setMemory();
+                this.setVisible(true);
+                for (int i = 0; i < 8; i++) {
+                    System.out.print(memory[i]+" ");
+                }
+                this.update();
+                System.out.println("\n");
+
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
 
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
+    private void singleStep() {
+
+        try {
+            fifo.executeInstructions();
+            lru.executeInstructions();
+            this.setMemory();
+            this.update();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void update() {
+        int fifoIndex = fifo.getIndex();
+        int lruIndex = lru.getIndex() + 4;
+//        System.out.println(fifoIndex+" " +lruIndex);
+
+        //change memory and color
+        for (int i = 0; i < 8; i++) {
+            map.get(i).setText(Integer.toString(memory[i]));
+
+            if(i == fifoIndex) {
+                map.get(i).setFill(Color.rgb(107,142,35));
+//                System.out.println(i+" f ");
+            } else if(i == lruIndex) {
+                map.get(i).setFill(Color.rgb(107,142,35));
+//                System.out.println(i+ "l ");
+            } else {
+                map.get(i).setFill(Color.BLACK);
+            }
+        }
+
+        //change number
+        FIFOCurrentInstruction.setText(Integer.toString(fifo.getCurrentInstruction()));
+        FIFOExecutedInstruction.setText(Integer.toString(fifo.getExecutedInstructions()));
+        FIFORateOfMissingPage.setText(fifo.getRateOfMissingPage());
+        LRUCurrentInstruction.setText(Integer.toString(lru.getCurrentInstruction()));
+        LRUExecutedInstruction.setText(Integer.toString(lru.getExecutedInstructions()));
+        LRURateOfMissingPage.setText(lru.getRateOfMissingPage());
+
+    }
+
+    private void initMap() {
+        map.put(0,memory0);
+        map.put(1,memory1);
+        map.put(2,memory2);
+        map.put(3,memory3);
+        map.put(4,memory4);
+        map.put(5,memory5);
+        map.put(6,memory6);
+        map.put(7,memory7);
+    }
+}
+
+class UpdateThread implements Runnable {
+    private Controller controller;
+
+    public UpdateThread(Controller controller) {
+        this.controller = controller;
+    }
+
+    private boolean exit = false;
+
+    public void setExit(boolean flag) {
+        exit = flag;
+    }
+
+    @Override
+    public void run() {
+        int i = 0;
+
+        while (!exit && i != 320) {
+            try {
+                controller.continuousExecute();
+                i++;
+                System.out.println("thread\n");
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

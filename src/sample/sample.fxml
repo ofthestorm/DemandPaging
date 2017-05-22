@@ -37,21 +37,21 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Text fx:id="memory1" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="46.21875" />
-                  <Text fx:id="memory2" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="45.21875" GridPane.columnIndex="1" />
-                  <Text fx:id="memory3" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="46.21875" GridPane.columnIndex="2" />
-                  <Text fx:id="memory4" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="47.21875" GridPane.columnIndex="3" />
+                  <Text fx:id="memory0" strokeType="OUTSIDE" strokeWidth="0.0" text="" textAlignment="CENTER" wrappingWidth="46.21875" />
+                  <Text fx:id="memory1" strokeType="OUTSIDE" strokeWidth="0.0" text="" textAlignment="CENTER" wrappingWidth="45.21875" GridPane.columnIndex="1" />
+                  <Text fx:id="memory2" strokeType="OUTSIDE" strokeWidth="0.0" text="" textAlignment="CENTER" wrappingWidth="46.21875" GridPane.columnIndex="2" />
+                  <Text fx:id="memory3" strokeType="OUTSIDE" strokeWidth="0.0" text="" textAlignment="CENTER" wrappingWidth="47.21875" GridPane.columnIndex="3" />
                </children>
             </GridPane>
-            <Text fx:id="FIFOCurrentInstruction" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="185.21875" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Text fx:id="FIFOExecutedInstruction" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="185.21875" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Text fx:id="FIFORateOfMissingPage" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="184.21875" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Text fx:id="FIFOCurrentInstruction" strokeType="OUTSIDE" strokeWidth="0.0" text="" textAlignment="CENTER" wrappingWidth="185.21875" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Text fx:id="FIFOExecutedInstruction" strokeType="OUTSIDE" strokeWidth="0.0" text="" textAlignment="CENTER" wrappingWidth="185.21875" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Text fx:id="FIFORateOfMissingPage" strokeType="OUTSIDE" strokeWidth="0.0" text="" textAlignment="CENTER" wrappingWidth="184.21875" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <GridPane alignment="CENTER" gridLinesVisible="true" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <children>
-                  <Text fx:id="memory5" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="44.21875" />
-                  <Text fx:id="memory6" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="43.21875" GridPane.columnIndex="1" />
-                  <Text fx:id="memory7" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="45.21875" GridPane.columnIndex="2" />
-                  <Text fx:id="memory8" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="45.21875" GridPane.columnIndex="3" />
+                  <Text fx:id="memory4" strokeType="OUTSIDE" strokeWidth="0.0" text="" textAlignment="CENTER" wrappingWidth="44.21875" />
+                  <Text fx:id="memory5" strokeType="OUTSIDE" strokeWidth="0.0" text="" textAlignment="CENTER" wrappingWidth="43.21875" GridPane.columnIndex="1" />
+                  <Text fx:id="memory6" strokeType="OUTSIDE" strokeWidth="0.0" text="" textAlignment="CENTER" wrappingWidth="45.21875" GridPane.columnIndex="2" />
+                  <Text fx:id="memory7" strokeType="OUTSIDE" strokeWidth="0.0" text="" textAlignment="CENTER" wrappingWidth="45.21875" GridPane.columnIndex="3" />
                </children>
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -66,9 +66,9 @@
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Algorithm" textAlignment="CENTER" wrappingWidth="151.791015625" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="FIFO" textAlignment="CENTER" wrappingWidth="183.791015625" GridPane.columnIndex="1" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="LRU" textAlignment="CENTER" wrappingWidth="180.791015625" GridPane.columnIndex="2" />
-            <Text fx:id="LRUCurrentInstruction" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="180.21875" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-            <Text fx:id="LRUExecutedInstruction" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="179.21875" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-            <Text fx:id="LRURateOfMissingPage" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="181.21875" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+            <Text fx:id="LRUCurrentInstruction" strokeType="OUTSIDE" strokeWidth="0.0" text="" textAlignment="CENTER" wrappingWidth="180.21875" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <Text fx:id="LRUExecutedInstruction" strokeType="OUTSIDE" strokeWidth="0.0" text="" textAlignment="CENTER" wrappingWidth="179.21875" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <Text fx:id="LRURateOfMissingPage" strokeType="OUTSIDE" strokeWidth="0.0" text="" textAlignment="CENTER" wrappingWidth="181.21875" GridPane.columnIndex="2" GridPane.rowIndex="4" />
          </children>
       </GridPane>
       <GridPane layoutX="145.0" layoutY="262.0" prefHeight="63.0" prefWidth="261.0">

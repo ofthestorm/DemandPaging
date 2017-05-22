@@ -1,5 +1,6 @@
 package sample;
 
+import java.text.DecimalFormat;
 import java.util.Random;
 
 /**
@@ -16,6 +17,7 @@ public class FIFO {
         this.instructions = ins.getInstructions();
     }
 
+    private boolean indexNeedChange = false;
 //    private static algorithms algorithm ;
     //the order number of current instruction
     private static int currentInstruction = 0;
@@ -25,6 +27,9 @@ public class FIFO {
     private static int executedInstructions = 0;
     //the index should be replaced
     private static int index = 0;
+    private static int indexCopy = 0;
+    //
+    private static int i = 0;
     //the list of memory which contains 4 parts
     //private ArrayList<Integer> memory = new ArrayList<>(4);
     private static int [] memory = new int[4];
@@ -34,6 +39,8 @@ public class FIFO {
     //private static int [] time = new int[] {0,0,0,0};
     //the array contains the executing order of instructions
     private static int [] instructions = new int[320];
+
+    DecimalFormat df = new DecimalFormat("#.00");
     //random
 //    static Random random = new Random();
 
@@ -72,35 +79,74 @@ public class FIFO {
 //    }
 
     //execute instructions
+//    public void executeInstructions() throws InterruptedException {
+//
+//    //    generateInstructions();
+//        int i = 0;
+//
+//        while (executedInstructions != 320) {
+//            executedInstructions += 1;
+//
+//            currentInstruction = instructions[i++];
+//            int currentPage = getPage(currentInstruction);
+//            if (isExist(currentPage)/*memory.contains(currentPage)*/) { // memory contains current page
+//
+//            } else {
+//                missPageCount += 1; // record missing page
+//                if (getEmptyPart() == 0/*memory.size() == 4*/) { // memory is already full
+//
+//                    memory[index] = currentPage;
+//                    index = (index + 1) % 4;
+//                } else {
+//
+//                    //add current page
+//                    //memory.add(currentPage);
+//                    int firstEmptyIndex = getFirstEmptyIndex();
+//                    memory[firstEmptyIndex] = currentPage;
+//                    bitmap[firstEmptyIndex] = true;
+//                }
+//            }
+//            displayMemory();
+//            Thread.sleep(1000);
+//        }
+//    }
     public void executeInstructions() throws InterruptedException {
 
-    //    generateInstructions();
-        int i = 0;
+        //    generateInstructions();
 
-        while (executedInstructions != 320) {
-            executedInstructions += 1;
+//        if(indexNeedChange == true) {
+//            index = (index + 1) % 4;
+//        }
+//        indexNeedChange = false;
+        executedInstructions += 1;
 
-            currentInstruction = instructions[i++];
-            int currentPage = getPage(currentInstruction);
-            if (isExist(currentPage)/*memory.contains(currentPage)*/) { // memory contains current page
 
+        currentInstruction = instructions[i++];
+        int currentPage = getPage(currentInstruction);
+        if (isExist(currentPage)/*memory.contains(currentPage)*/) { // memory contains current pag
+//            System.out.println("exist");
+        } else {
+            missPageCount += 1; // record missing page
+            if (getEmptyPart() == 0/*memory.size() == 4*/) { // memory is already full
+                memory[index] = currentPage;
+                indexCopy = index;
+                index = (index + 1) % 4;
+//                indexNeedChange = true;
+//                System.out.println("fifo");
             } else {
-                missPageCount += 1; // record missing page
-                if (getEmptyPart() == 0/*memory.size() == 4*/) { // memory is already full
 
-                    memory[index] = currentPage;
-                    index = (index + 1) % 4;
-                } else {
-
-                    //add current page
-                    //memory.add(currentPage);
-                    int firstEmptyIndex = getFirstEmptyIndex();
-                    memory[firstEmptyIndex] = currentPage;
-                    bitmap[firstEmptyIndex] = true;
-                }
+                //add current page
+                //memory.add(currentPage);
+                index = getFirstEmptyIndex();
+                indexCopy = index;
+                memory[index] = currentPage;
+                bitmap[index] = true;
+                index = (index + 1) % 4;
+//                System.out.println("find empty");
             }
-            displayMemory();
-            Thread.sleep(1000);
+
+       //     displayMemory();
+
         }
     }
 
@@ -110,6 +156,14 @@ public class FIFO {
                 return true;
         }
         return false;
+    }
+
+    private static int getIndexOfPage(int page) {
+        for (int i = 0; i < 4; i++) {
+            if(memory[i] == page)
+                return i;
+        }
+        return -1;
     }
 
     private static int getEmptyPart() {
@@ -157,8 +211,15 @@ public class FIFO {
         return instructions;
     }
 
-    public static String getRateOfMissingPage() {
-        return missPageCount + " / " + 320 + " = " + Double.toString((double)missPageCount / (double)320);
+    public int getIndex() {
+//        return indexCopy;
+        return getIndexOfPage(getPage(currentInstruction));
+    }
+
+    public String getRateOfMissingPage() {
+//        return missPageCount + " / " + 320 + " = " + Double.toString((double)missPageCount / (double)320);
+        double result = (double)missPageCount / (double)320 * 100;
+        return missPageCount + " / " + 320 + " = " + df.format(result) + "%";
     }
 
     private static void displayMemory() {
@@ -174,7 +235,7 @@ public class FIFO {
         System.out.println(currentInstruction);
         System.out.println(missPageCount);
         System.out.println(executedInstructions);
-        System.out.println(getRateOfMissingPage());
+   //     System.out.println(getRateOfMissingPage());
     }
 
 }
