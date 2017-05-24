@@ -11,7 +11,20 @@ import java.util.Random;
 public class LRU {
 
     public LRU(Instruction ins) {
+
+
+        currentInstruction = 0;
+        missPageCount = 0;
+        executedInstructions = 0;
+        index = 0;
+
+        i = 0;
+        memory = new int[4];
+        bitmap = new boolean[] {false, false, false, false};
+        instructions = new int[320];
+        df = new DecimalFormat("#.00");
         this.instructions = ins.getInstructions();
+
     }
 
     //the order number of current instruction
@@ -36,42 +49,6 @@ public class LRU {
     private static int [] instructions = new int[320];
 
     DecimalFormat df = new DecimalFormat("#.00");
-    //random
-//    static Random random = new Random();
-
-    //init instructions[320]
-//    private static void generateInstructions() {
-//        for (int i = 0;i < 320;i++) {
-//            switch (i % 6) {
-//                case 0 : { // 0 ~ 319 -> m
-//                    instructions[i] = random.nextInt(319);
-////                    System.out.println("m="+instructions[i]);
-//                }break;
-//                case 1 : { // m + 1
-//                    instructions[i] = instructions[i - 1] + 1;
-////                    System.out.println("m+1="+instructions[i]);
-//                }break;
-//                case 2 : { // 0 ~ m - 1 -> m1
-//                    instructions[i] = random.nextInt(instructions[i - 1] - 2);
-////                    System.out.println("m1="+instructions[i]);
-//                }break;
-//                case 3 : { // m1 + 1
-//                    instructions[i] = instructions[i - 1] + 1;
-////                    System.out.println("m1+1="+instructions[i]);
-//                }break;
-//                case 4 : { // m1 + 1 ~ 319 -> m2
-//                    instructions[i] = random.nextInt(319 - (instructions[i - 1] + 1)) + instructions[i - 1];
-////                    System.out.println("m2="+instructions[i]);
-//                }break;
-//                case 5 : { // m2 + 1
-//                    instructions[i] = instructions[i - 1] + 1;
-////                    System.out.println("m2+1="+instructions[i]);
-//                }break;
-//                default:
-//                    break;
-//            }
-//        }
-//    }
 
     //execute instructions
 //    public void executeInstructions() throws InterruptedException {

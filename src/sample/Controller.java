@@ -15,7 +15,7 @@ public class Controller {
 
     UpdateThread updateThread = new UpdateThread(this);
 
-    Thread thread = new Thread(updateThread, "Chef     1");
+    Thread thread = new Thread(updateThread, "thead1");
 
 
     private enum choices {
@@ -29,6 +29,7 @@ public class Controller {
         start,
         next
     }
+
     private buttons button = buttons.start;
 
     private Instruction ins = new Instruction();
@@ -91,22 +92,32 @@ public class Controller {
 
         ins.generateInstructions();
         fifo = new FIFO(ins);
+
         lru = new LRU(ins);
-        System.out.println(fifo.getMemory());
-        System.out.println(fifo.getExecutedInstructions());
         System.out.println(fifo);
         System.out.println(ins);
+        System.out.println("above in init");
+//        System.out.println(fifo.getMemory());
+        System.out.println(fifo.getExecutedInstructions());
+//        System.out.println(fifo);
+//        System.out.println(ins);
 
     }
 
 
     @FXML
     private void resetButtonOnMouseClicked() {
-        fifo = null;
-        lru = null;
-        System.gc();
+//        fifo = null;
+//        lru = null;
+//        System.gc();
+
+//        System.out.println( );
+
+
         this.init();
 
+        System.out.println(fifo);
+        System.out.println(ins);
         if(choice == choices.continuousExecution) {
             updateThread.setExit(true);
         }
@@ -240,10 +251,10 @@ public class Controller {
             map.get(i).setText(Integer.toString(memory[i]));
 
             if(i == fifoIndex) {
-                map.get(i).setFill(Color.rgb(107,142,35));
+                map.get(i).setFill(Color.rgb(205,85,85));
 //                System.out.println(i+" f ");
             } else if(i == lruIndex) {
-                map.get(i).setFill(Color.rgb(107,142,35));
+                map.get(i).setFill(Color.rgb(205,85,85));
 //                System.out.println(i+ "l ");
             } else {
                 map.get(i).setFill(Color.BLACK);

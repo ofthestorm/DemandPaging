@@ -14,6 +14,18 @@ public class FIFO {
 //        LRU   // Least Recently Used
 //    }
     public FIFO(Instruction ins) {
+
+        indexNeedChange = false;
+        currentInstruction = 0;
+        missPageCount = 0;
+        executedInstructions = 0;
+        index = 0;
+        indexCopy = 0;
+        i = 0;
+        memory = new int[4];
+        bitmap = new boolean[] {false, false, false, false};
+        instructions = new int[320];
+        df = new DecimalFormat("#.00");
         this.instructions = ins.getInstructions();
     }
 
@@ -35,81 +47,14 @@ public class FIFO {
     private static int [] memory = new int[4];
     //false:memory is empty, true:memory is full
     private static boolean [] bitmap = new boolean[] {false,false,false,false};
-    //unused time
-    //private static int [] time = new int[] {0,0,0,0};
     //the array contains the executing order of instructions
     private static int [] instructions = new int[320];
-
+    //format
     DecimalFormat df = new DecimalFormat("#.00");
-    //random
-//    static Random random = new Random();
 
-    //init instructions[320]
-//    private static void generateInstructions() {
-//        for (int i = 0;i < 320;i++) {
-//            switch (i % 6) {
-//                case 0 : { // 0 ~ 319 -> m
-//                    instructions[i] = random.nextInt(319);
-//                    System.out.println("m="+instructions[i]);
-//                }break;
-//                case 1 : { // m + 1
-//                    instructions[i] = instructions[i - 1] + 1;
-//                    System.out.println("m+1="+instructions[i]);
-//                }break;
-//                case 2 : { // 0 ~ m - 1 -> m1
-//                    instructions[i] = random.nextInt(instructions[i - 1] - 2);
-//                    System.out.println("m1="+instructions[i]);
-//                }break;
-//                case 3 : { // m1 + 1
-//                    instructions[i] = instructions[i - 1] + 1;
-//                    System.out.println("m1+1="+instructions[i]);
-//                }break;
-//                case 4 : { // m1 + 1 ~ 319 -> m2
-//                    instructions[i] = random.nextInt(319 - (instructions[i - 1] + 1)) + instructions[i - 1];
-//                    System.out.println("m2="+instructions[i]);
-//                }break;
-//                case 5 : { // m2 + 1
-//                    instructions[i] = instructions[i - 1] + 1;
-//                    System.out.println("m2+1="+instructions[i]);
-//                }break;
-//                default:
-//                    break;
-//            }
-//        }
-//    }
 
     //execute instructions
-//    public void executeInstructions() throws InterruptedException {
-//
-//    //    generateInstructions();
-//        int i = 0;
-//
-//        while (executedInstructions != 320) {
-//            executedInstructions += 1;
-//
-//            currentInstruction = instructions[i++];
-//            int currentPage = getPage(currentInstruction);
-//            if (isExist(currentPage)/*memory.contains(currentPage)*/) { // memory contains current page
-//
-//            } else {
-//                missPageCount += 1; // record missing page
-//                if (getEmptyPart() == 0/*memory.size() == 4*/) { // memory is already full
-//
-//                    memory[index] = currentPage;
-//                    index = (index + 1) % 4;
-//                } else {
-//
-//                    //add current page
-//                    //memory.add(currentPage);
-//                    int firstEmptyIndex = getFirstEmptyIndex();
-//                    memory[firstEmptyIndex] = currentPage;
-//                    bitmap[firstEmptyIndex] = true;
-//                }
-//            }
-//            displayMemory();
-//            Thread.sleep(1000);
-//        }
-//    }
+
     public void executeInstructions() throws InterruptedException {
 
         //    generateInstructions();
