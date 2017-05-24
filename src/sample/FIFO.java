@@ -1,7 +1,6 @@
 package sample;
 
 import java.text.DecimalFormat;
-import java.util.Random;
 
 /**
  * Created by keke on 2017/5/17.
@@ -9,44 +8,36 @@ import java.util.Random;
 
 public class FIFO {
 
-    //    public enum algorithms{
-//        FIFO, // First In First Out
-//        LRU   // Least Recently Used
-//    }
     public FIFO(Instruction ins) {
-
-        indexNeedChange = false;
         currentInstruction = 0;
         missPageCount = 0;
         executedInstructions = 0;
         index = 0;
         indexCopy = 0;
-        i = 0;
-        memory = new int[4];
+        count = 0;
+        memory = new int[] {-1, -1, -1, -1};
         bitmap = new boolean[] {false, false, false, false};
         instructions = new int[320];
         df = new DecimalFormat("#.00");
         this.instructions = ins.getInstructions();
     }
 
-    private boolean indexNeedChange = false;
-//    private static algorithms algorithm ;
     //the order number of current instruction
-    private static int currentInstruction = 0;
+    private static int currentInstruction;
     //the count of missing page
-    private static int missPageCount = 0;
+    private static int missPageCount;
     //the number of executed instructions
-    private static int executedInstructions = 0;
+    private static int executedInstructions;
     //the index should be replaced
-    private static int index = 0;
-    private static int indexCopy = 0;
+    private static int index;
+    private static int indexCopy;
     //
-    private static int i = 0;
+    private static int count;
     //the list of memory which contains 4 parts
     //private ArrayList<Integer> memory = new ArrayList<>(4);
     private static int [] memory = new int[4];
     //false:memory is empty, true:memory is full
-    private static boolean [] bitmap = new boolean[] {false,false,false,false};
+    private static boolean [] bitmap = new boolean[4];
     //the array contains the executing order of instructions
     private static int [] instructions = new int[320];
     //format
@@ -54,44 +45,27 @@ public class FIFO {
 
 
     //execute instructions
-
     public void executeInstructions() throws InterruptedException {
 
-        //    generateInstructions();
-
-//        if(indexNeedChange == true) {
-//            index = (index + 1) % 4;
-//        }
-//        indexNeedChange = false;
         executedInstructions += 1;
 
-
-        currentInstruction = instructions[i++];
+        currentInstruction = instructions[count++];
         int currentPage = getPage(currentInstruction);
-        if (isExist(currentPage)/*memory.contains(currentPage)*/) { // memory contains current pag
-//            System.out.println("exist");
+        if (isExist(currentPage)) { // memory contains current pag
         } else {
             missPageCount += 1; // record missing page
-            if (getEmptyPart() == 0/*memory.size() == 4*/) { // memory is already full
+            if (getEmptyPart() == 0) { // memory is already full
                 memory[index] = currentPage;
                 indexCopy = index;
                 index = (index + 1) % 4;
-//                indexNeedChange = true;
-//                System.out.println("fifo");
             } else {
-
                 //add current page
-                //memory.add(currentPage);
                 index = getFirstEmptyIndex();
                 indexCopy = index;
                 memory[index] = currentPage;
                 bitmap[index] = true;
                 index = (index + 1) % 4;
-//                System.out.println("find empty");
             }
-
-       //     displayMemory();
-
         }
     }
 
@@ -123,7 +97,6 @@ public class FIFO {
     private static int getFirstEmptyIndex() {
         for (int i = 0; i < 4; i++) {
             if(bitmap[i] == false)
-                //    bitmap[i] = true;
                 return i;
         }
         return -1;
@@ -145,9 +118,6 @@ public class FIFO {
         return executedInstructions;
     }
 
-    //    public ArrayList<Integer> getMemory() {
-//        return memory;
-//    }
     public int [] getMemory() {
         return memory;
     }
@@ -157,12 +127,10 @@ public class FIFO {
     }
 
     public int getIndex() {
-//        return indexCopy;
         return getIndexOfPage(getPage(currentInstruction));
     }
 
     public String getRateOfMissingPage() {
-//        return missPageCount + " / " + 320 + " = " + Double.toString((double)missPageCount / (double)320);
         double result = (double)missPageCount / (double)320 * 100;
         return missPageCount + " / " + 320 + " = " + df.format(result) + "%";
     }
@@ -174,13 +142,10 @@ public class FIFO {
         System.out.print("\n");
     }
 
-    public static void main(String[] args) throws InterruptedException {
-    //    executeInstructions();
-
-        System.out.println(currentInstruction);
-        System.out.println(missPageCount);
-        System.out.println(executedInstructions);
-   //     System.out.println(getRateOfMissingPage());
-    }
+//    public static void main(String[] args) throws InterruptedException {
+//        System.out.println(currentInstruction);
+//        System.out.println(missPageCount);
+//        System.out.println(executedInstructions);
+//    }
 
 }

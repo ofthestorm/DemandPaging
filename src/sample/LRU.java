@@ -1,8 +1,6 @@
 package sample;
 
 import java.text.DecimalFormat;
-import java.time.Clock;
-import java.util.Random;
 
 /**
  * Created by keke on 2017/5/17.
@@ -11,16 +9,14 @@ import java.util.Random;
 public class LRU {
 
     public LRU(Instruction ins) {
-
-
         currentInstruction = 0;
         missPageCount = 0;
         executedInstructions = 0;
         index = 0;
-
-        i = 0;
-        memory = new int[4];
+        count = 0;
+        memory = new int[] {-1, -1, -1, -1};
         bitmap = new boolean[] {false, false, false, false};
+        time = new int[] {0,0,0,0};
         instructions = new int[320];
         df = new DecimalFormat("#.00");
         this.instructions = ins.getInstructions();
@@ -28,78 +24,30 @@ public class LRU {
     }
 
     //the order number of current instruction
-    private static int currentInstruction = 0;
+    private static int currentInstruction;
     //the count of missing page
-    private static int missPageCount = 0;
+    private static int missPageCount;
     //the number of executed instructions
-    private static int executedInstructions = 0;
+    private static int executedInstructions;
     //the index should be replaced
-    private static int index = 0;
-
-    private static int i = 0;
+    private static int index;
+    //i
+    private static int count;
     //the list of memory which contains 4 parts
-    //private ArrayList<Integer> memory = new ArrayList<>(4);
     private static int [] memory = new int[4];
     //false:memory is empty, true:memory is full
-    private static boolean [] bitmap = new boolean[] {false,false,false,false};
+    private static boolean [] bitmap = new boolean[4];
     //unused time
-    private static int [] time = new int[] {0,0,0,0};
- //   private static Clock[] time = new Clock [4];
+    private static int [] time = new int[4];
     //the array contains the executing order of instructions
     private static int [] instructions = new int[320];
-
+    //format
     DecimalFormat df = new DecimalFormat("#.00");
 
-    //execute instructions
-//    public void executeInstructions() throws InterruptedException {
-//
-//     //   generateInstructions();
-//        int i = 0;
-//
-//        while (executedInstructions != 320) {
-//            executedInstructions += 1;
-//
-//            currentInstruction = instructions[i++];
-//            int currentPage = getPage(currentInstruction);
-//            if (isExist(currentPage)) { // memory contains current page
-//                time[getIndexOfPage(currentPage)] = 0;
-//            } else {
-//                missPageCount += 1; // record missing page
-//                if (getEmptyPart() == 0) { // memory is already full
-//
-//                    int leastRecentlyUsedIndex = getLeastRecentlyUsedIndex();
-//                    memory[leastRecentlyUsedIndex] = currentPage;
-//                    time[leastRecentlyUsedIndex] = 0;
-//                    for (int j = 0; j < 4; j++) {
-//                        if (j != leastRecentlyUsedIndex)
-//                            time[j] += 1;
-//                    }
-//
-//                } else {
-//                    //add current page
-//                    //memory.add(currentPage);
-//                    int firstEmptyIndex = getFirstEmptyIndex();
-//                    memory[firstEmptyIndex] = currentPage;
-//                    bitmap[firstEmptyIndex] = true;
-//                    time[firstEmptyIndex] = 0;
-//                    for (int j = 0; j < 4; j++) {
-//                        if (j != firstEmptyIndex)
-//                            time[j] += 1;
-//                    }
-//
-//                }
-//            }
-//            displayMemory();
-//            Thread.sleep(1000);
-//        }
-//    }
     public void executeInstructions()  {
-
-        //   generateInstructions();
-
             executedInstructions += 1;
 
-            currentInstruction = instructions[i++];
+            currentInstruction = instructions[count++];
             int currentPage = getPage(currentInstruction);
             if (isExist(currentPage)) { // memory contains current page
                 time[getIndexOfPage(currentPage)] = 0;
@@ -117,7 +65,6 @@ public class LRU {
 
                 } else {
                     //add current page
-                    //memory.add(currentPage);
                     index = getFirstEmptyIndex();
                     memory[index] = currentPage;
                     bitmap[index] = true;
@@ -126,15 +73,7 @@ public class LRU {
                         if (j != index)
                             time[j] += 1;
                     }
-
                 }
-
-        //    displayMemory();
-//                try {
-//                    Thread.sleep(1000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
             }
     }
 
@@ -166,7 +105,6 @@ public class LRU {
     private static int getFirstEmptyIndex() {
         for (int i = 0; i < 4; i++) {
             if(bitmap[i] == false)
-                //    bitmap[i] = true;
                 return i;
         }
         return -1;
@@ -200,15 +138,11 @@ public class LRU {
         return executedInstructions;
     }
 
-    //    public ArrayList<Integer> getMemory() {
-//        return memory;
-//    }
     public int [] getMemory() {
         return memory;
     }
 
     public int getIndex() {
-//        return index;
         return getIndexOfPage(getPage(currentInstruction));
     }
 
@@ -229,12 +163,9 @@ public class LRU {
         System.out.print("\n");
     }
 
-    public static void main(String[] args) throws InterruptedException {
-//        executeInstructions();
-
-        System.out.println(currentInstruction);
-        System.out.println(missPageCount);
-        System.out.println(executedInstructions);
-//        System.out.println(getRateOfMissingPage());
-    }
+//    public static void main(String[] args) throws InterruptedException {
+//        System.out.println(currentInstruction);
+//        System.out.println(missPageCount);
+//        System.out.println(executedInstructions);
+//    }
 }

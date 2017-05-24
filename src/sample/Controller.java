@@ -17,31 +17,29 @@ public class Controller {
 
     Thread thread = new Thread(updateThread, "thead1");
 
-
     private enum choices {
         singleStep,
         continuousExecution,
         none
     }
+
     private choices choice = choices.none;
 
     private enum buttons {
         start,
         next
     }
-
     private buttons button = buttons.start;
 
     private Instruction ins = new Instruction();
+
     private FIFO fifo;
+
     private LRU lru;
 
     private int [] memory = new int[8];
-//    private static int executedInstructions = 0;
 
     private Map<Integer,Text> map = new HashMap<Integer,Text>();
-
-
 
     @FXML private Text memory0;
     @FXML private Text memory1;
@@ -60,8 +58,6 @@ public class Controller {
     @FXML private Text LRURateOfMissingPage;
     @FXML private Button startButton;
     @FXML private ChoiceBox executionModeChoice;
-
-//    private Integer currentChoice = new Integer();
 
     public void initialize() {
         init();
@@ -83,88 +79,62 @@ public class Controller {
                 }
             }
         });
-
     }
 
     private void init() {
-
-//        this.setVisible(false);
-
         ins.generateInstructions();
         fifo = new FIFO(ins);
-
         lru = new LRU(ins);
-        System.out.println(fifo);
-        System.out.println(ins);
-        System.out.println("above in init");
-//        System.out.println(fifo.getMemory());
-        System.out.println(fifo.getExecutedInstructions());
-//        System.out.println(fifo);
-//        System.out.println(ins);
-
     }
 
 
     @FXML
     private void resetButtonOnMouseClicked() {
-//        fifo = null;
-//        lru = null;
-//        System.gc();
-
-//        System.out.println( );
-
-
         this.init();
 
-        System.out.println(fifo);
-        System.out.println(ins);
         if(choice == choices.continuousExecution) {
             updateThread.setExit(true);
         }
-//        try {
-//            thread.setSuspend(true);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+
         startButton.setDisable(false);
         startButton.setText("Start");
         button = buttons.start;
         executionModeChoice.setDisable(false);
-//        this.setVisible(false);
+        this.setVisible(false);
     }
 
     @FXML
     private void startButtonOnMouseClicked() {
-
-        for (int i = 0; i < 100; i++) {
-            System.out.print(fifo.getInstructions()[i]+" ");
-        }
-        System.out.println();
+//        for (int i = 0; i < 8; i++) {
+//            if (memory[i] == -1) {
+//                map.get(i).setVisible(false);
+//            } else {
+//                map.get(i).setVisible(true);
+//            }
+//        }
         if (choice == choices.singleStep) {
             executionModeChoice.setDisable(true);
             if (button == buttons.start) {
                 startButton.setText("Next");
-//                System.out.println("s");
                 button = buttons.next;
                 singleStep();
                 this.setMemory();
                 this.setVisible(true);
 
             } else { //next
-                //执行
                 if(fifo.getExecutedInstructions() != 320) {
                     singleStep();
                 } else {
                     startButton.setDisable(true);
                 }
-//                System.out.println("n");
             }
         } else if (choice == choices.continuousExecution) {
+            updateThread = new UpdateThread(this);
+            thread = new Thread(updateThread, "thead1");
+
             updateThread.setExit(false);
             executionModeChoice.setDisable(true);
-//            this.setMemory();
             this.setVisible(true);
-//            continuousExecute();
 
             thread.start();
             //执行
@@ -194,33 +164,15 @@ public class Controller {
     private void setMemory() {
             System.arraycopy(fifo.getMemory(),0,memory,0,4);
             System.arraycopy(lru.getMemory(),0,memory,4,4);
-//        for (int i = 0; i < 8; i++) {
-//            if(i < 4)
-//                memory[i] = fifo.getMemory()[i];
-//            else
-//                memory[i] = lru.getMemory()[i-4];
-//        }
     }
 
     public void continuousExecute(){
         try {
-//            while(fifo.getExecutedInstructions() != 320){
-                fifo.executeInstructions();
-                lru.executeInstructions();
-                this.setMemory();
-                this.setVisible(true);
-//                for (int i = 0; i < 8; i++) {
-//                    System.out.print(memory[i]+" ");
-//                }
-                this.update();
-//                System.out.println("\n");
-
-//                try {
-//                    Thread.sleep(1000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
+            fifo.executeInstructions();
+            lru.executeInstructions();
+            this.setMemory();
+            this.setVisible(true);
+            this.update();
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -244,21 +196,23 @@ public class Controller {
     public void update() {
         int fifoIndex = fifo.getIndex();
         int lruIndex = lru.getIndex() + 4;
-//        System.out.println(fifoIndex+" " +lruIndex);
 
         //change memory and color
         for (int i = 0; i < 8; i++) {
             map.get(i).setText(Integer.toString(memory[i]));
-
             if(i == fifoIndex) {
                 map.get(i).setFill(Color.rgb(205,85,85));
-//                System.out.println(i+" f ");
             } else if(i == lruIndex) {
                 map.get(i).setFill(Color.rgb(205,85,85));
-//                System.out.println(i+ "l ");
             } else {
                 map.get(i).setFill(Color.BLACK);
             }
+
+//            if (memory[i] == -1) {
+//                map.get(i).setVisible(false);
+//            } else {
+//                map.get(i).setVisible(true);
+//            }
         }
 
         //change number
@@ -300,12 +254,11 @@ class UpdateThread implements Runnable {
     public void run() {
         int i = 0;
 
-        while (/*!exit &&*/ i != 320) {
+        while (i != 320) {
             try {
                 if(!exit) {
                     controller.continuousExecute();
                     i++;
-//                    System.out.println("thread\n");
                     Thread.sleep(500);
                 }
             } catch (InterruptedException e) {
